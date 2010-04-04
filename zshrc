@@ -16,10 +16,23 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*'   force-list always
+zstyle ':completion:*' squeeze-slashes true
+
+
+
 CDPATH=.:~:~/git
 
 #aliases
-alias vi=vim
+alias -g vi=$(which vim)
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+alias -g ll='ls -lah'
+alias -g X='| xargs'
+alias -g G='| egrep'
+
 #allow tab completion in the middle of a word
 setopt COMPLETE_IN_WORD
 setopt CORRECT
