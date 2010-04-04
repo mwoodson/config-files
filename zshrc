@@ -1,0 +1,147 @@
+#
+# .zshrc is sourced in interactive shells.
+# It should contain commands to set up aliases,
+# functions, options, key bindings, etc.
+#
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+setopt appendhistory autocd beep extendedglob nomatch notify
+bindkey -e
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+zstyle :compinstall filename '/home/mwoodson/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+CDPATH=.:~:~/git
+
+#aliases
+alias vi=vim
+#allow tab completion in the middle of a word
+setopt COMPLETE_IN_WORD
+setopt CORRECT
+
+
+## keep background processes at full speed
+#setopt NOBGNICE
+## restart running processes on exit
+#setopt HUP
+
+## history
+#setopt APPEND_HISTORY
+## for sharing history between zsh processes
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+
+## never ever beep ever
+setopt NO_BEEP
+
+## automatically decide when to page a list of completions
+#LISTMAX=0
+
+## disable mail checking
+#MAILCHECK=0
+
+autoload -U colors
+colors
+# set some colors
+for COLOR in RED GREEN YELLOW WHITE BLACK CYAN BLUE PURPLE; do
+    eval PR_$COLOR='%{$fg[${(L)COLOR}]%}'         
+    eval PR_BRIGHT_$COLOR='%{$fg_bold[${(L)COLOR}]%}'
+done                                                 
+PR_RESET="%{${reset_color}%}";                       
+
+setopt prompt_subst
+ 
+autoload -Uz vcs_info
+
+zstyle ':vcs_info:*' enable git cvs svn
+# set formats
+# %b - branchname
+# %u - unstagedstr (see below)
+# %c - stangedstr (see below)
+# %a - action (e.g. rebase-i)
+# %R - repository path
+# %S - path in the repository
+## check-for-changes can be really slow.
+## you should disable it, if you work with large repositories
+zstyle ':vcs_info:*' enable git                                 # only enable git/git-svn
+zstyle ':vcs_info:*:prompt:*' check-for-changes true            # slower, but lets us show changes to working/index
+#zstyle ':vcs_info:*:prompt:*' unstagedstr "${RED}★☢✗✘"             # unstaged changes string: red *
+zstyle ':vcs_info:*:prompt:*' unstagedstr "${PR_BRIGHT_YELLOW}*${PR_RESET}"             # unstaged changes string: red *
+zstyle ':vcs_info:*:prompt:*' stagedstr "${PR_BRIGHT_YELLOW}+${PR_RESET}"            # staged changes string: yellow +
+zstyle ':vcs_info:*:prompt:*' formats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b${PR_RESET}%c%u${PR_BRIGHT_RED})${PR_RESET}"              "%a"
+zstyle ':vcs_info:*:prompt:*' actionformats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b|%a)${PR_RESET}"              "%a"
+#zstyle ':vcs_info:*:prompt:*' actionformats "$VCSPROMPT" "${NC}[${BLUE}%b%c%u${NC}:${purple}%a${NC}]${SSHPROMPT}" # left and right prompt when an action is occuring (rebase, etc)
+#zstyle ':vcs_info:*:prompt:*' formats "$VCSPROMPT" "${NC}[${BLUE}%b%c%u${NC}]${SSHPROMPT}" # left and right prompt when normal (no action)
+zstyle ':vcs_info:*:prompt:*' nvcsformats   ""                             "%~"
+#
+#zstyle ':vcs_info:*:prompt:*' nvcsformats "no" "no"             # sets $_vcs_info_msg_[0|1]_ to "no" when no vcs, testable
+
+#FMT_BRANCH="${PR_GREEN}%b%u%c${PR_RST}" # e.g. masterÂ¹Â²
+#FMT_ACTION="(${PR_CYAN}%a${PR_RST}%)"   # e.g. (rebase-i)
+#FMT_PATH="%R${PR_YELLOW}/%S"              # e.g. ~/repo/subdir
+#
+#zstyle ':vcs_info:*:prompt:*' check-for-changes true
+#zstyle ':vcs_info:*:prompt:*' unstagedstr   'Â¹'  # display Â¹ if there are unstaged changes
+#zstyle ':vcs_info:*:prompt:*' stagedstr     'Â²'  # display Â² if there are staged changes
+#zstyle ':vcs_info:*:prompt:*' actionformats "${FMT_BRANCH}${FMT_ACTION}//" "${FMT_PATH}"
+#zstyle ':vcs_info:*:prompt:*' formats       "${FMT_BRANCH}//"              "${FMT_PATH}"
+#zstyle ':vcs_info:*:prompt:*' nvcsformats   ""                             "%~"
+
+#zstyle ':vcs_info:*' actionformats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
+#zstyle ':vcs_info:*' formats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%f '
+#zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b%F{1}:%F{3}%r'
+BLUE_DIAMOND="${PR_BRIGHT_BLUE}◆${PR_RESET}"
+
+precmd(){
+    vcs_info 'prompt'
+
+    # Battery Stuff
+    if which ibam &> /dev/null; then
+        IBAMSTAT="$(ibam)"
+        if [[ ${IBAMSTAT[(f)(1)][(w)1]} =  "Battery" ]]; then
+            BATTSTATE="$(ibam --percentbattery)"
+            BATTPRCNT="${BATTSTATE[(f)1][(w)-2]}"
+            BATTTIME="${BATTSTATE[(f)2][(w)-1]}"
+            PR_BATTERY="Bat: ${BATTPRCNT}%% (${BATTTIME})"
+            if [[ "${BATTPRCNT}" -lt 15 ]]; then
+                PR_BATTERY=" ${BLUE_DIAMOND} ${PR_BRIGHT_RED}${PR_BATTERY}"
+            elif [[ "${BATTPRCNT}" -lt 50 ]]; then
+                PR_BATTERY=" ${BLUE_DIAMOND} ${PR_BRIGHT_YELLOW}${PR_BATTERY}"
+            elif [[ "${BATTPRCNT}" -lt 100 ]]; then
+                PR_BATTERY=" ${BLUE_DIAMOND} ${PR_BRIGHT_CYAN}${PR_BATTERY}${PR_RESET}"
+            else
+                PR_BATTERY=""
+            fi
+        else
+            PR_BATTERY=""
+        fi
+    fi
+    ###End of Battery Stuff######
+
+    # now let's change the color of the path if it's not writable
+    if [[ -w $PWD ]]; then
+        PR_PWDCOLOR="${PR_YELLOW}"
+    else
+        PR_PWDCOLOR="${PR_BRIGHT_RED}"
+    fi  
+
+}
+if [[ $(whoami) = root ]]; then
+    PROMPT_LINE="${PR_BRIGHT_RED}%n@%M${PR_RESET}"
+else
+    PROMPT_LINE="${PR_GREEN}%n${PR_RESET}@${PR_BRIGHT_BLUE}%m${PR_RESET}"
+fi
+
+#PROMPT=[%n@%m]%~%# 
+PROMPT='\
+${PR_BRIGHT_BLACK}▶${PR_RESET}${PR_RED}▶${PR_BRIGHT_RED}▶${PR_RESET} \
+${PR_BRIGHT_GREEN}%D{%R.%S %a %b %d %Y}${PR_RESET}\
+%(?.. ${PR_BRIGHT_BLUE}◆${PR_RESET} ${PR_BRIGHT_YELLOW}Exit Code: %?${PR_RESET})\
+${PR_BATTERY}\
+ ${PR_BRIGHT_RED}◀${PR_RESET}${PR_RED}◀${PR_BRIGHT_BLACK}◀${PR_RESET}
+${PROMPT_LINE}${PR_BRIGHT_GREEN}:${PR_RESET}${PR_PWDCOLOR}%~${PR_RESET}${vcs_info_msg_0_}%(!.${PR_BRIGHT_RED}%#${PR_RESET}.${PR_BRIGHT_GREEN}➤${PR_RESET}) '
