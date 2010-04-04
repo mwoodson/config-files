@@ -83,31 +83,12 @@ zstyle ':vcs_info:*' enable git cvs svn
 ## you should disable it, if you work with large repositories
 zstyle ':vcs_info:*' enable git                                 # only enable git/git-svn
 zstyle ':vcs_info:*:prompt:*' check-for-changes true            # slower, but lets us show changes to working/index
-#zstyle ':vcs_info:*:prompt:*' unstagedstr "${RED}★☢✗✘"             # unstaged changes string: red *
 zstyle ':vcs_info:*:prompt:*' unstagedstr "${PR_BRIGHT_YELLOW}*${PR_RESET}"             # unstaged changes string: red *
 zstyle ':vcs_info:*:prompt:*' stagedstr "${PR_BRIGHT_YELLOW}+${PR_RESET}"            # staged changes string: yellow +
 zstyle ':vcs_info:*:prompt:*' formats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b${PR_RESET}%c%u${PR_BRIGHT_RED})${PR_RESET}"              "%a"
 zstyle ':vcs_info:*:prompt:*' actionformats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b|%a)${PR_RESET}"              "%a"
-#zstyle ':vcs_info:*:prompt:*' actionformats "$VCSPROMPT" "${NC}[${BLUE}%b%c%u${NC}:${purple}%a${NC}]${SSHPROMPT}" # left and right prompt when an action is occuring (rebase, etc)
-#zstyle ':vcs_info:*:prompt:*' formats "$VCSPROMPT" "${NC}[${BLUE}%b%c%u${NC}]${SSHPROMPT}" # left and right prompt when normal (no action)
 zstyle ':vcs_info:*:prompt:*' nvcsformats   ""                             "%~"
-#
-#zstyle ':vcs_info:*:prompt:*' nvcsformats "no" "no"             # sets $_vcs_info_msg_[0|1]_ to "no" when no vcs, testable
 
-#FMT_BRANCH="${PR_GREEN}%b%u%c${PR_RST}" # e.g. masterÂ¹Â²
-#FMT_ACTION="(${PR_CYAN}%a${PR_RST}%)"   # e.g. (rebase-i)
-#FMT_PATH="%R${PR_YELLOW}/%S"              # e.g. ~/repo/subdir
-#
-#zstyle ':vcs_info:*:prompt:*' check-for-changes true
-#zstyle ':vcs_info:*:prompt:*' unstagedstr   'Â¹'  # display Â¹ if there are unstaged changes
-#zstyle ':vcs_info:*:prompt:*' stagedstr     'Â²'  # display Â² if there are staged changes
-#zstyle ':vcs_info:*:prompt:*' actionformats "${FMT_BRANCH}${FMT_ACTION}//" "${FMT_PATH}"
-#zstyle ':vcs_info:*:prompt:*' formats       "${FMT_BRANCH}//"              "${FMT_PATH}"
-#zstyle ':vcs_info:*:prompt:*' nvcsformats   ""                             "%~"
-
-#zstyle ':vcs_info:*' actionformats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
-#zstyle ':vcs_info:*' formats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%f '
-#zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b%F{1}:%F{3}%r'
 BLUE_DIAMOND="${PR_BRIGHT_BLUE}◆${PR_RESET}"
 
 precmd(){
