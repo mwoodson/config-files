@@ -26,7 +26,7 @@ CDPATH=.:~:~/git
 
 #aliases
 alias -g vi=$(which vim)
-alias -g -- -='cd -'
+alias -- -='cd -'
 alias -g ...='../..'
 alias -g ....='../../..'
 alias -g .....='../../../..'
