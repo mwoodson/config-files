@@ -55,14 +55,14 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 CDPATH=.:~:~/git
 
 #aliases
-alias -g vi=$(which vim)
+alias  vi=$(which vim)
 alias -- -='cd -'
-alias -g ...='../..'
-alias -g ....='../../..'
-alias -g .....='../../../..'
-alias -g ll='ls -lah'
-alias -g sl='ls -lah'
-alias -g l='ls -la'
+alias  ...='../..'
+alias  ....='../../..'
+alias  .....='../../../..'
+alias  ll='ls -lah'
+alias  sl='ls -lah'
+alias  l='ls -la'
 alias -g X='| xargs'
 alias -g G='| egrep'
 
