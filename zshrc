@@ -119,7 +119,7 @@ zstyle ':vcs_info:*:prompt:*' stagedstr "${PR_BRIGHT_YELLOW}+${PR_RESET}"       
 zstyle ':vcs_info:*:prompt:*' formats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b${PR_RESET}%c%u${PR_BRIGHT_RED})${PR_RESET}"              "%a"
 zstyle ':vcs_info:*:prompt:*' actionformats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b|%a)${PR_RESET}"              "%a"
 zstyle ':vcs_info:*:prompt:*' nvcsformats   ""                             "%~"
-zstyle ':vcs_info:*:prompt:*' branchformat  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b:%r${PR_RESET}%c%u${PR_BRIGHT_RED})${PR_RESET}"              "%a"
+zstyle ':vcs_info:*:prompt:*' branchformat  "%b:%r"              ""
 
 BLUE_DIAMOND="${PR_BRIGHT_BLUE}◆${PR_RESET}"
 
