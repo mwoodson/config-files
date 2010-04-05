@@ -113,13 +113,13 @@ zstyle ':vcs_info:*' enable git cvs svn
 # %S - path in the repository
 ## check-for-changes can be really slow.
 ## you should disable it, if you work with large repositories
-zstyle ':vcs_info:*' enable git                                 # only enable git/git-svn
 zstyle ':vcs_info:*:prompt:*' check-for-changes true            # slower, but lets us show changes to working/index
 zstyle ':vcs_info:*:prompt:*' unstagedstr "${PR_BRIGHT_YELLOW}*${PR_RESET}"             # unstaged changes string: red *
 zstyle ':vcs_info:*:prompt:*' stagedstr "${PR_BRIGHT_YELLOW}+${PR_RESET}"            # staged changes string: yellow +
 zstyle ':vcs_info:*:prompt:*' formats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b${PR_RESET}%c%u${PR_BRIGHT_RED})${PR_RESET}"              "%a"
 zstyle ':vcs_info:*:prompt:*' actionformats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b|%a)${PR_RESET}"              "%a"
 zstyle ':vcs_info:*:prompt:*' nvcsformats   ""                             "%~"
+zstyle ':vcs_info:*:prompt:*' branchformat  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b:%r${PR_RESET}%c%u${PR_BRIGHT_RED})${PR_RESET}"              "%a"
 
 BLUE_DIAMOND="${PR_BRIGHT_BLUE}◆${PR_RESET}"
 
