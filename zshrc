@@ -6,7 +6,8 @@
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
-setopt appendhistory autocd beep extendedglob nomatch notify
+setopt appendhistory autocd nobeep extendedglob nomatch notify
+setopt autolist auto_menu
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -16,11 +17,10 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*'   force-list always
-zstyle ':completion:*' squeeze-slashes true
-
-
 
 CDPATH=.:~:~/git
 
@@ -39,7 +39,6 @@ alias -g G='| egrep'
 #allow tab completion in the middle of a word
 setopt COMPLETE_IN_WORD
 setopt CORRECT
-
 
 ## keep background processes at full speed
 #setopt NOBGNICE
@@ -128,13 +127,13 @@ precmd(){
     fi  
 
 }
+
 if [[ $(whoami) = root ]]; then
     PROMPT_LINE="${PR_BRIGHT_RED}%n@%M${PR_RESET}"
 else
     PROMPT_LINE="${PR_GREEN}%n${PR_RESET}@${PR_BRIGHT_BLUE}%m${PR_RESET}"
 fi
 
-#PROMPT=[%n@%m]%~%# 
 PROMPT='\
 ${PR_BRIGHT_BLACK}▶${PR_RESET}${PR_RED}▶${PR_BRIGHT_RED}▶${PR_RESET} \
 ${PR_BRIGHT_GREEN}%D{%R.%S %a %b %d %Y}${PR_RESET}\
