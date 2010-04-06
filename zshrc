@@ -26,7 +26,7 @@ bindkey "ee[D" backward-word
 # for rxvt
 bindkey "e[8~" end-of-line
 bindkey "e[7~" beginning-of-line
-# for non RH/Debian xterm, can't hurt for RH/DEbian xterm
+# for non RH/Debian xterm, cant hurt for RH/DEbian xterm
 bindkey "eOH" beginning-of-line
 bindkey "eOF" end-of-line
 # for freebsd console
