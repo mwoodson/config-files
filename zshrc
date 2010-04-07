@@ -7,6 +7,7 @@ HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 WORDCHARS="${WORDCHARS:s#/#}"
+WORDCHARS="${WORDCHARS:s#.#}"
 ##############################################################
 #key binding stuff to get the right keys to work
 # key bindings
