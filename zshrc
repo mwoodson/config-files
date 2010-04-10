@@ -48,6 +48,7 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
+zstyle ':completion::complete:cd::' tag-order local-directories
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*:*:kill:*' menu yes select
