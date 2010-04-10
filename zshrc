@@ -38,7 +38,7 @@ bindkey '^i' expand-or-complete-prefix
 #########################################################################
 
 setopt appendhistory autocd nobeep extendedglob nomatch notify
-setopt autolist auto_menu
+setopt autolist auto_menu menucomplete
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -47,6 +47,11 @@ zstyle :compinstall filename '/home/mwoodson/.zshrc'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
+
+# Completion caching
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path .zcache
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
 
 zstyle ':completion::complete:cd::' tag-order local-directories
 zstyle ':completion:*' menu select=2
