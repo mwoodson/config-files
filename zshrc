@@ -38,7 +38,7 @@ bindkey '^i' expand-or-complete-prefix
 #########################################################################
 
 setopt appendhistory autocd nobeep extendedglob nomatch notify
-setopt autolist auto_menu menucomplete
+setopt autolist auto_menu
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -47,6 +47,40 @@ zstyle :compinstall filename '/home/mwoodson/.zshrc'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
+## completion system
+zstyle ':completion:*:approximate:'    max-errors 'reply=( $((($#PREFIX+$#SUFFIX)/3 )) numeric )' # allow one error for every three characters typed in approximate completer
+zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # don't complete backup files as executables
+zstyle ':completion:*:correct:*'       insert-unambiguous true             # start menu completion only if it could find no unambiguous initial string
+zstyle ':completion:*:corrections'     format $'%{\e[0;31m%}%d (errors: %e)%{\e[0m%}' #
+zstyle ':completion:*:correct:*'       original true                       #
+zstyle ':completion:*:default'         list-colors ${(s.:.)LS_COLORS}      # activate color-completion(!)
+zstyle ':completion:*:descriptions'    format $'%{\e[0;31m%}completing %B%d%b%{\e[0m%}'  # format on completion
+#zstyle ':completion:*:*:cd:*:directory-stack' menu yes select              # complete 'cd -<tab>' with menu
+zstyle ':completion:*:expand:*'        tag-order all-expansions            # insert all expansions for expand completer
+zstyle ':completion:*:history-words'   list false                          #
+zstyle ':completion:*:history-words'   menu yes                            # activate menu
+zstyle ':completion:*:history-words'   remove-all-dups yes                 # ignore duplicate entries
+zstyle ':completion:*:history-words'   stop yes                            #
+zstyle ':completion:*'                 matcher-list 'm:{a-z}={A-Z}'        # match uppercase from lowercase
+zstyle ':completion:*:matches'         group 'yes'                         # separate matches into groups
+zstyle ':completion:*'                 group-name ''
+zstyle ':completion:*:messages'        format '%d'                         #
+zstyle ':completion:*:options'         auto-description '%d'               #
+zstyle ':completion:*:options'         description 'yes'                   # describe options in full
+zstyle ':completion:*:processes'       command 'ps -au$USER'               # on processes completion complete all user processes
+zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters        # offer indexes before parameters in subscripts
+zstyle ':completion:*'                 verbose true                        # provide verbose completion information
+zstyle ':completion:*:warnings'        format $'%{\e[0;31m%}No matches for:%{\e[0m%} %d' # set format for warnings
+zstyle ':completion:*:*:zcompile:*'    ignored-patterns '(*~|*.zwc)'       # define files to ignore for zcompile
+zstyle ':completion:correct:'          prompt 'correct to: %e'             #
+zstyle ':completion::(^approximate*):*:functions' ignored-patterns '_*'    # Ignore completion functions for commands you don't have:
+
+# complete manual by their section
+zstyle ':completion:*:manuals'    separate-sections true
+zstyle ':completion:*:manuals.*'  insert-sections   true
+zstyle ':completion:*:man:*'      menu yes select
+
+
 
 # Completion caching
 zstyle ':completion::complete:*' use-cache on
@@ -95,6 +129,13 @@ glob_rsync() {
     rsync --progress $args
 }
 #aliases
+alias ls='ls --color=auto'
+alias dir='dir --color=auto'
+alias vdir='vdir --color=auto'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
 alias scp='noglob glob_scp'
 alias rsync='noglob glob_rsync'
 alias  vi=$(which vim)
