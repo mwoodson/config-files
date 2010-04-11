@@ -55,8 +55,8 @@ zstyle ':completion:*:corrections'     format $'%{\e[0;31m%}%d (errors: %e)%{\e[
 zstyle ':completion:*:correct:*'       original true                       #
 zstyle ':completion:*:default'         list-colors ${(s.:.)LS_COLORS}      # activate color-completion(!)
 zstyle ':completion:*:descriptions'    format $'%{\e[0;31m%}completing %B%d%b%{\e[0m%}'  # format on completion
-#zstyle ':completion:*:*:cd:*:directory-stack' menu yes select              # complete 'cd -<tab>' with menu
-zstyle ':completion:*:expand:*'        tag-order all-expansions            # insert all expansions for expand completer
+zstyle ':completion:*:*:cd:*:directory-stack' menu yes select              # complete 'cd -<tab>' with menu
+#zstyle ':completion:*:expand:*'        tag-order all-expansions            # insert all expansions for expand completer
 zstyle ':completion:*:history-words'   list false                          #
 zstyle ':completion:*:history-words'   menu yes                            # activate menu
 zstyle ':completion:*:history-words'   remove-all-dups yes                 # ignore duplicate entries
@@ -128,6 +128,13 @@ glob_rsync() {
     done
     rsync --progress $args
 }
+
+#setup ~/.dir_colors if one doesn't exist
+if [ ! -s ~/.dir_colors ]; then
+    dircolors -p > ~/.dir_colors
+fi
+eval `dircolors ~/.dir_colors`
+
 #aliases
 alias ls='ls --color=auto'
 alias dir='dir --color=auto'
