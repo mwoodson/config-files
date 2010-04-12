@@ -53,8 +53,7 @@ _force_rehash() {
           return 1  # Because we didn't really complete anything
 }
 
-zstyle ':completion:*' completer _oldlist _expand _force_rehash _complete ...
-
+zstyle ':completion:*' completer _oldlist _expand _force_rehash _complete _approximate
 zstyle ':completion:*:approximate:'    max-errors 'reply=( $((($#PREFIX+$#SUFFIX)/3 )) numeric )' # allow one error for every three characters typed in approximate completer
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # don't complete backup files as executables
 zstyle ':completion:*:correct:*'       insert-unambiguous true             # start menu completion only if it could find no unambiguous initial string
