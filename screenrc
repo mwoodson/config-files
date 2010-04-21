@@ -89,7 +89,7 @@
 # - uses background color for delete operations
   termcapinfo xterm* be
 
-  termcapinfo xterm ti@:te@ 
+  termcapinfo xterm* ti@:te@ 
 
 
 # ===============================================================
