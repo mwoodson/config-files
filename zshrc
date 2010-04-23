@@ -36,34 +36,6 @@ bindkey "\e[H" beginning-of-line
 bindkey "\e[F" end-of-line
 # completion in the middle of a line
 bindkey '^i' expand-or-complete-prefix
-#########################################################################
-
-case $TERM in
-    xterm* | rxvt* | urxvt*)
-        function zsh_term_prompt_precmd {
-                print -Pn "\e]0;%n@%m: %~\a"
-        }
-        function zsh_term_prompt_preexec {
-                local x="${${${1//\"/\\\"}//\$/\\\\\$}//\%/%%}"
-                print -Pn "\e]0;%n@%m: %~  $x\a"
-        }
-        preexec_functions+='zsh_term_prompt_preexec'
-        precmd_functions+='zsh_term_prompt_precmd'
-        ;;
-    screen*)
-        function zsh_term_prompt_precmd {
-                print -nR $'\033k'"zsh"$'\033'\\\
-                print -nR $'\033]0;'"zsh"$'\a'
-        }
-        function zsh_term_prompt_preexec {
-                local x="${${${1//\"/\\\"}//\$/\\\\\$}//\%/%%}"
-                print -nR $'\033k'"$x"$'\033'\\\
-                print -nR $'\033]0;'"$x"$'\a'
-        }
-        preexec_functions+='zsh_term_prompt_preexec'
-        precmd_functions+='zsh_term_prompt_precmd'
-        ;;
-esac
 
 setopt appendhistory autocd nobeep extendedglob nomatch notify
 setopt autolist auto_menu
