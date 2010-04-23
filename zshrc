@@ -38,6 +38,33 @@ bindkey "\e[F" end-of-line
 bindkey '^i' expand-or-complete-prefix
 #########################################################################
 
+case $TERM in
+    xterm* | rxvt* | urxvt*)
+        function zsh_term_prompt_precmd {
+                print -Pn "\e]0;%n@%m: %~\a"
+        }
+        function zsh_term_prompt_preexec {
+                local x="${${${1//\"/\\\"}//\$/\\\\\$}//\%/%%}"
+                print -Pn "\e]0;%n@%m: %~  $x\a"
+        }
+        preexec_functions+='zsh_term_prompt_preexec'
+        precmd_functions+='zsh_term_prompt_precmd'
+        ;;
+    screen*)
+        function zsh_term_prompt_precmd {
+                print -nR $'\033k'"zsh"$'\033'\\\
+                print -nR $'\033]0;'"zsh"$'\a'
+        }
+        function zsh_term_prompt_preexec {
+                local x="${${${1//\"/\\\"}//\$/\\\\\$}//\%/%%}"
+                print -nR $'\033k'"$x"$'\033'\\\
+                print -nR $'\033]0;'"$x"$'\a'
+        }
+        preexec_functions+='zsh_term_prompt_preexec'
+        precmd_functions+='zsh_term_prompt_precmd'
+        ;;
+esac
+
 setopt appendhistory autocd nobeep extendedglob nomatch notify
 setopt autolist auto_menu
 bindkey -e
@@ -219,6 +246,50 @@ zstyle ':vcs_info:*:prompt:*' nvcsformats   ""                             "%~"
 zstyle ':vcs_info:*:prompt:*' branchformat  "%b:%r"              ""
 
 BLUE_DIAMOND="${PR_BRIGHT_BLUE}◆${PR_RESET}"
+
+case $TERM in
+    *xterm*|rxvt|(dt|k|E)term)
+        preexec () {
+            if [[ $(basename ${1[(w)1]}) == "ssh" ]]; then
+                SHN=${1[(w)-1]}
+                SHN_ARRAY=( ${(s,.,)SHN})
+                print -Pn "\e]2;$SHN:%~\a"
+            else
+                print -Pn "\e]2;%n@%m:%~\a"
+            fi
+        }
+    ;;
+    screen)
+        preexec () { 
+            if [[ $(basename ${1[(w)1]}) == "ssh" ]]; then
+                SHN=${1[(w)-1]}
+                SHN_ARRAY=( ${(s,.,)SHN})
+                case ${#SHN_ARRAY} in
+                    1)
+                        print -Pn "\033k$SHN\033\\"
+                    ;;
+                    2)
+                        print -Pn "\033k$SHN\033\\"
+                    ;;
+                    4)
+                        print -Pn "\033k$SHN_ARRAY[1].$SHN_ARRAY[2]\033\\"
+                    ;;
+                    5)
+                        print -Pn "\033k$SHN_ARRAY[1].$SHN_ARRAY[2].$SHN_ARRAY[3]\033\\"
+                    ;;
+                    *)
+                        print -Pn "\033k$SHN_ARRAY[1]\033\\"
+                    ;;
+                esac
+            fi
+        }
+        #set up precmd to draw the screen title
+        function set_screen_title { 
+            print -Pn "\033k%m\033\\"
+        }
+        precmd_functions=( set_screen_title )
+    ;;
+}
 
 precmd(){
     vcs_info 'prompt'
