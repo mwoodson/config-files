@@ -72,7 +72,6 @@ function preexec () {
         then
             if [[ $(basename $cmdtitle) == "ssh" ]]; then
                 SHN=$(echo $1 | sed 's/ .*\@/ /' | awk '{print $NF}')
-                echo "SHN=$SHN"
                 SHN_COUNT=$(echo $SHN | awk -F . '{print NF}')
                 case $SHN_COUNT in
                     [1-2])
