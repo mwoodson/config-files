@@ -263,11 +263,9 @@ case $TERM in
         preexec () { 
             if [[ $(basename ${1[(w)1]}) == "ssh" ]]; then
                 SHN=${1[(w)-1]}
+                SHN=${SHN#*@}
                 SHN_ARRAY=( ${(s,.,)SHN})
                 case ${#SHN_ARRAY} in
-                    1)
-                        print -Pn "\033k$SHN\033\\"
-                    ;;
                     2)
                         print -Pn "\033k$SHN\033\\"
                     ;;
@@ -275,7 +273,8 @@ case $TERM in
                         print -Pn "\033k$SHN_ARRAY[1].$SHN_ARRAY[2]\033\\"
                     ;;
                     5)
-                        print -Pn "\033k$SHN_ARRAY[1].$SHN_ARRAY[2].$SHN_ARRAY[3]\033\\"
+                        #print -Pn "\033k$SHN_ARRAY[1].$SHN_ARRAY[2].$SHN_ARRAY[3]\033\\"
+                        print -Pn "\033k$SHN_ARRAY[1].$SHN_ARRAY[3]\033\\"
                     ;;
                     *)
                         print -Pn "\033k$SHN_ARRAY[1]\033\\"
