@@ -24,6 +24,12 @@ bindkey "\e[5D" backward-word
 bindkey "\eOd" emacs-backward-word
 bindkey "\ee[C" forward-word
 bindkey "\ee[D" backward-word
+#Ctrl-left/right
+bindkey '\e[1;5C' forward-word # ctrl right
+bindkey '\e[1;5D' backward-word # ctrl left o
+#alt-left/right
+bindkey "\e[1;3C" forward-word 
+bindkey "\e[1;3D" backward-word
 #bindkey "^H" backward-delete-word
 # for rxvt
 bindkey "\e[8~" end-of-line
