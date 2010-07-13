@@ -168,6 +168,16 @@ alias  l='ls -la'
 alias -g X='| xargs'
 alias -g G='| egrep'
 
+show-colors() { 
+    for line in {0..17}; do 
+        for col in {0..15}; do 
+            code=$(( $col * 18 + $line )); 
+            printf $'\e[38;05;%dm %03d' $code $code; 
+        done; 
+        echo; 
+    done 
+} 
+
 #allow tab completion in the middle of a word
 setopt COMPLETE_IN_WORD
 setopt CORRECT
