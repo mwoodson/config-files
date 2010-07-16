@@ -168,15 +168,15 @@ alias  l='ls -la'
 alias -g X='| xargs'
 alias -g G='| egrep'
 
-show-colors() { 
-    for line in {0..17}; do 
-        for col in {0..15}; do 
-            code=$(( $col * 18 + $line )); 
-            printf $'\e[38;05;%dm %03d' $code $code; 
-        done; 
-        echo; 
-    done 
-} 
+show-colors() {
+    for line in {0..17}; do
+        for col in {0..15}; do
+            code=$(( $col * 18 + $line ));
+            printf $'\e[38;05;%dm %03d' $code $code;
+        done;
+        echo;
+    done
+}
 
 #allow tab completion in the middle of a word
 setopt COMPLETE_IN_WORD
@@ -234,6 +234,8 @@ zstyle ':vcs_info:*:prompt:*' nvcsformats   ""                             "%~"
 zstyle ':vcs_info:*:prompt:*' branchformat  "%b:%r"              ""
 
 BLUE_DIAMOND="${PR_BRIGHT_BLUE}◆${PR_RESET}"
+YELLOW_DIAMOND="${PR_BRIGHT_YELLOW}◆${PR_RESET}"
+GREEN_DIAMOND="${PR_BRIGHT_GREEN}◆${PR_RESET}"
 
 case $TERM in
     *xterm*|rxvt|(dt|k|E)term)
@@ -278,7 +280,29 @@ case $TERM in
     ;;
 }
 
+if [[ -n $SSH_CONNECTION ]]; then
+    SSH_IP=$(echo $SSH_CLIENT | awk '{print $1}')
+    HOST_OUTPUT=$(host $SSH_IP)
+    if [[ $? -eq 0 ]]; then
+        SSH_HOST=$(echo $HOST_OUTPUT | awk '{print $NF}' | sed 's/.$//')
+    else
+        SSH_HOST=$SSH_IP
+    fi    
+    SSH_PROMPT="${BLUE_DIAMOND}${PR_BRIGHT_RED}SSH from ${PR_RESET}${PR_BRIGHT_YELLOW}$SSH_HOST${PR_RESET}${GREEN_DIAMOND}"
+    #SSH_PROMPT="${YELLOW_DIAMOND}${PR_BRIGHT_RED}SSH${PR_RESET}${YELLOW_DIAMOND}"
+    #SSH_VAR="${YELLOW_DIAMOND}${PR_BRIGHT_RED}SSH${PR_RESET}${YELLOW_DIAMOND}"
+fi
+
+if [[ $(whoami) = root ]]; then
+    PROMPT_LINE="${PR_BRIGHT_RED}%n@%M${PR_RESET}"
+else
+    PROMPT_LINE="${PR_GREEN}%n${PR_RESET}@${PR_BRIGHT_BLUE}%m${PR_RESET}"
+fi
+
 precmd(){
+
+    local exit_status=$?
+
     vcs_info 'prompt'
 
     # Battery Stuff
@@ -311,18 +335,32 @@ precmd(){
         PR_PWDCOLOR="${PR_BRIGHT_RED}"
     fi  
 
-}
+    # exit code, print it if it's not 0
+    if [[ $exit_status -ne 0 ]]; then
+        EXIT_STATUS=" ${PR_BRIGHT_BLUE}◆${PR_RESET} ${PR_BRIGHT_YELLOW}Exit Code: ${exit_status}${PR_RESET}"
+    else
+        EXIT_STATUS=""
+    fi  
 
-if [[ $(whoami) = root ]]; then
-    PROMPT_LINE="${PR_BRIGHT_RED}%n@%M${PR_RESET}"
-else
-    PROMPT_LINE="${PR_GREEN}%n${PR_RESET}@${PR_BRIGHT_BLUE}%m${PR_RESET}"
-fi
 
-PROMPT='\
+#PROMPT LINE
+LINE1_PROMPT="\
 ${PR_BRIGHT_BLACK}▶${PR_RESET}${PR_RED}▶${PR_BRIGHT_RED}▶${PR_RESET} \
 ${PR_BRIGHT_YELLOW}%D{%R.%S %a %b %d %Y}${PR_RESET}\
-%(?.. ${PR_BRIGHT_BLUE}◆${PR_RESET} ${PR_BRIGHT_YELLOW}Exit Code: %?${PR_RESET})\
+${EXIT_STATUS}\
+%(1j. ${PR_BRIGHT_GREEN}◆${PR_RESET} ${PR_BRIGHT_YELLOW}Jobs: %j${PR_RESET}.)\
 ${PR_BATTERY}\
- ${PR_BRIGHT_RED}◀${PR_RESET}${PR_RED}◀${PR_BRIGHT_BLACK}◀${PR_RESET}
-${PROMPT_LINE}${PR_BRIGHT_GREEN}:${PR_RESET}${PR_PWDCOLOR}%~${PR_RESET}${vcs_info_msg_0_}%(!.${PR_BRIGHT_RED}%#${PR_RESET}.${PR_BRIGHT_GREEN}➤${PR_RESET}) '
+ ${PR_BRIGHT_RED}◀${PR_RESET}${PR_RED}◀${PR_BRIGHT_BLACK}◀${PR_RESET}"
+###################
+
+local TERMWIDTH
+(( TERMWIDTH = ${COLUMNS} - 2 ))
+LINE1=${(e%)LINE1_PROMPT} SSH_P=${(e%)SSH_PROMPT}
+LINE1_LENGTH=${#${LINE1//\[[^m]##m/}}
+SSH_P_LENGTH=${#${SSH_P//\[[^m]##m/}}
+FILL_SPACES=${(l:TERMWIDTH - (LINE1_LENGTH + SSH_P_LENGTH):: :)}
+
+print -- "$LINE1 $FILL_SPACES $SSH_P"
+}
+
+PROMPT='${PROMPT_LINE}${PR_BRIGHT_GREEN}:${PR_RESET}${PR_PWDCOLOR}%~${PR_RESET}${vcs_info_msg_0_}%(!.${PR_BRIGHT_RED}%#${PR_RESET}.${PR_BRIGHT_GREEN}➤${PR_RESET}) '
