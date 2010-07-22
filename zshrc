@@ -3,6 +3,15 @@
 # It should contain commands to set up aliases,
 # functions, options, key bindings, etc.
 #
+#  Not all terminals support this and, of those that do,
+#  not all provide facilities to test the support, hence
+#  the user should decide based on the terminal type.  Most
+#  terminals  support the  colours  black,  red,  green,
+#  yellow, blue, magenta, cyan and white, which can be set
+#  by name.  In addition. default may be used to set the
+#  terminal's default foreground colour.  Abbreviations
+#  are allowed; b or bl selects black.  
+#
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
@@ -141,7 +150,7 @@ glob_rsync() {
     rsync --progress $args
 }
 
-#setup ~/.dir_colors if one doesn't exist
+#setup ~/.dir_colors if one doesn\'t exist
 if [ ! -s ~/.dir_colors ]; then
     dircolors -p > ~/.dir_colors
 fi
@@ -202,8 +211,7 @@ setopt NO_BEEP
 ## disable mail checking
 #MAILCHECK=0
 
-autoload -U colors
-colors
+autoload -U colors && colors
 # set some colors
 for COLOR in RED GREEN YELLOW WHITE BLACK CYAN BLUE PURPLE; do
     eval PR_$COLOR='%{$fg[${(L)COLOR}]%}'         
@@ -301,7 +309,10 @@ fi
 if [[ $(whoami) = root ]]; then
     PROMPT_LINE="${PR_BRIGHT_RED}%n@%M${PR_RESET}"
 else
-    PROMPT_LINE="${PR_GREEN}%n${PR_RESET}@${PR_BRIGHT_BLUE}%m${PR_RESET}"
+    HASH_NUM=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 1-6)
+    HASH_MOD=$(($HASH_NUM % 6 + 2)) 
+    #PROMPT_LINE="${PR_GREEN}%n${PR_RESET}@${PR_BRIGHT_BLUE}%m${PR_RESET}"
+    PROMPT_LINE="${PR_GREEN}%n${PR_RESET}@%B%F{$HASH_MOD}%m%b%f"
 fi
 
 precmd(){
@@ -333,14 +344,14 @@ precmd(){
     fi
     ###End of Battery Stuff######
 
-    # now let's change the color of the path if it's not writable
+    # now lets change the color of the path if its not writable
     if [[ -w $PWD ]]; then
         PR_PWDCOLOR="${PR_YELLOW}"
     else
         PR_PWDCOLOR="${PR_BRIGHT_RED}"
     fi  
 
-    # exit code, print it if it's not 0
+    # exit code, print it if its not 0
     if [[ $exit_status -ne 0 ]]; then
         EXIT_STATUS=" ${PR_BRIGHT_BLUE}◆${PR_RESET} ${PR_BRIGHT_YELLOW}Exit Code: ${exit_status}${PR_RESET}"
     else
