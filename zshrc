@@ -315,6 +315,9 @@ else
     PROMPT_LINE="${PR_GREEN}%n${PR_RESET}@%B%F{$HASH_MOD}%m%b%f"
 fi
 
+HASH_NUM2=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 4-7)
+HASH_MOD2=$(($HASH_NUM2 % 6 + 2)) 
+
 precmd(){
 
     local exit_status=$?
@@ -360,9 +363,10 @@ precmd(){
 
 
 #PROMPT LINE
+#${PR_BRIGHT_YELLOW}%D{%R.%S %a %b %d %Y}${PR_RESET}\
 LINE1_PROMPT="\
 ${PR_BRIGHT_BLACK}▶${PR_RESET}${PR_RED}▶${PR_BRIGHT_RED}▶${PR_RESET} \
-${PR_BRIGHT_YELLOW}%D{%R.%S %a %b %d %Y}${PR_RESET}\
+%B%F{$HASH_MOD2}%D{%R.%S %a %b %d %Y}%b%f\
 ${EXIT_STATUS}\
 %(1j. ${PR_BRIGHT_GREEN}◆${PR_RESET} ${PR_BRIGHT_YELLOW}Jobs: %j${PR_RESET}.)\
 ${PR_BATTERY}\
