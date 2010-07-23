@@ -234,20 +234,20 @@ zstyle ':vcs_info:*' enable git cvs svn
 ## check-for-changes can be really slow.
 ## you should disable it, if you work with large repositories
 zstyle ':vcs_info:*:prompt:*' check-for-changes true            # slower, but lets us show changes to working/index
-zstyle ':vcs_info:*:prompt:*' unstagedstr "${PR_BRIGHT_YELLOW}*${PR_RESET}"             # unstaged changes string: red *
-zstyle ':vcs_info:*:prompt:*' stagedstr "${PR_BRIGHT_YELLOW}+${PR_RESET}"            # staged changes string: yellow +
-zstyle ':vcs_info:*:prompt:*' formats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b${PR_RESET}%c%u${PR_BRIGHT_RED})${PR_RESET}"              "%a"
-zstyle ':vcs_info:*:prompt:*' actionformats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRIGHT_RED}(%b|%a)${PR_RESET}"              "%a"
+zstyle ':vcs_info:*:prompt:*' unstagedstr "%B%F{yellow}*%b%f"             # unstaged changes string: red *
+zstyle ':vcs_info:*:prompt:*' stagedstr "%B%F{yellow}+%f%b"            # staged changes string: yellow +
+zstyle ':vcs_info:*:prompt:*' formats  " %F{green}%s%f:%B%F{red}(%b%f%b%c%u%B%F{red})%f%b"              "%a"
+zstyle ':vcs_info:*:prompt:*' actionformats  " %F{green}%s%f:%B%F{red}(%b|%a)%f%b"              "%a"
 zstyle ':vcs_info:*:prompt:*' nvcsformats   ""                             "%~"
 zstyle ':vcs_info:*:prompt:*' branchformat  "%b:%r"              ""
 
-BLUE_DIAMOND="${PR_BRIGHT_BLUE}◆${PR_RESET}"
-YELLOW_DIAMOND="${PR_BRIGHT_YELLOW}◆${PR_RESET}"
-GREEN_DIAMOND="${PR_BRIGHT_GREEN}◆${PR_RESET}"
-RED_DIAMOND="${PR_BRIGHT_RED}◆${PR_RESET}"
-RED_RARROW="${PR_BRIGHT_RED}▶${PR_RESET}"
-RED_LARROW="${PR_BRIGHT_RED}◀${PR_RESET}"
-RED_STAR="${PR_BRIGHT_RED}✱${PR_RESET}"
+BLUE_DIAMOND="%B%F{blue}◆%f%b"
+YELLOW_DIAMOND="%B%F{yellow}◆%f%b"
+GREEN_DIAMOND="%B%F{green}◆%f%b"
+RED_DIAMOND="%B%F{red}◆%f%b"
+RED_RARROW="%B%F{red}▶%f%b"
+RED_LARROW="%B%F{red}◀%f%b"
+RED_STAR="%B%F{red}✱%b%f"
 
 case $TERM in
     *xterm*|rxvt|(dt|k|E)term)
@@ -300,19 +300,19 @@ if [[ -n $SSH_CONNECTION ]]; then
     else
         SSH_HOST=$SSH_IP
     fi    
-    SSH_PROMPT="${RED_STAR}${PR_YELLOW}SSH from: ${PR_RESET}${PR_BRIGHT_GREEN}$SSH_HOST${PR_RESET}${RED_STAR}"
+    SSH_PROMPT="${RED_STAR}%F{yellow}SSH from: %f%B%F{green}$SSH_HOST%f%b${RED_STAR}"
     #SSH_PROMPT="${YELLOW_DIAMOND}${PR_BRIGHT_RED}SSH${PR_RESET}${YELLOW_DIAMOND}"
     #SSH_VAR="${YELLOW_DIAMOND}${PR_BRIGHT_RED}SSH${PR_RESET}${YELLOW_DIAMOND}"
 
 fi
 
 if [[ $(whoami) = root ]]; then
-    PROMPT_LINE="${PR_BRIGHT_RED}%n@%M${PR_RESET}"
+    PROMPT_LINE="%B%F{red}%n@%M%f%b"
 else
     HASH_NUM=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 1-6)
     HASH_MOD=$(($HASH_NUM % 6 + 2)) 
-    #PROMPT_LINE="${PR_GREEN}%n${PR_RESET}@${PR_BRIGHT_BLUE}%m${PR_RESET}"
-    PROMPT_LINE="${PR_GREEN}%n${PR_RESET}@%B%F{$HASH_MOD}%m%b%f"
+    #PROMPT_LINE="%F{green}%n%f@${PR_BRIGHT_BLUE}%m${PR_RESET}"
+    PROMPT_LINE="%F{green}%n%f@%B%F{$HASH_MOD}%m%b%f"
 fi
 
 HASH_NUM2=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 4-7)
@@ -349,14 +349,14 @@ precmd(){
 
     # now lets change the color of the path if its not writable
     if [[ -w $PWD ]]; then
-        PR_PWDCOLOR="${PR_YELLOW}"
+        PR_PWDCOLOR="%F{yellow}"
     else
         PR_PWDCOLOR="${PR_BRIGHT_RED}"
     fi  
 
     # exit code, print it if its not 0
     if [[ $exit_status -ne 0 ]]; then
-        EXIT_STATUS=" ${PR_BRIGHT_BLUE}◆${PR_RESET} %B%F{$HASH_MOD2}Exit Code:%b%f %B%F{yellow}${exit_status}%b%f"
+        EXIT_STATUS=" %B%F{blue}◆%f%b %B%F{$HASH_MOD2}Exit Code:%b%f %B%F{yellow}${exit_status}%b%f"
     else
         EXIT_STATUS=""
     fi  
@@ -365,12 +365,12 @@ precmd(){
 #PROMPT LINE
 #${PR_BRIGHT_YELLOW}%D{%R.%S %a %b %d %Y}${PR_RESET}\
 LINE1_PROMPT="\
-${PR_BRIGHT_BLACK}▶${PR_RESET}${PR_RED}▶${PR_BRIGHT_RED}▶${PR_RESET} \
+%B%F{black}▶%f%b%F{red}▶%B%F{red}▶%f%b \
 %B%F{$HASH_MOD2}%D{%R.%S %a %b %d %Y}%b%f\
 ${EXIT_STATUS}\
-%(1j. ${PR_BRIGHT_GREEN}◆${PR_RESET} ${PR_BRIGHT_YELLOW}Jobs: %j${PR_RESET}.)\
+%(1j. %B%F{green}◆%f%b %B%F{yellow}Jobs: %j%f%b.)\
 ${PR_BATTERY}\
- ${PR_BRIGHT_RED}◀${PR_RESET}${PR_RED}◀${PR_BRIGHT_BLACK}◀${PR_RESET}"
+ %B%F{red}◀%f%b%F{red}◀%B%F{black}◀%f%b"
 ###################
 
 local TERMWIDTH
@@ -384,4 +384,4 @@ FILL_SPACES=${(l:TERMWIDTH - (LINE1_LENGTH + SSH_P_LENGTH):: :)}
 print -- "$LINE1 $FILL_SPACES $SSH_P"
 }
 
-PROMPT='${PROMPT_LINE}${PR_BRIGHT_GREEN}:${PR_RESET}${PR_PWDCOLOR}%~${PR_RESET}${vcs_info_msg_0_}%(!.${PR_BRIGHT_RED}%#${PR_RESET}.${PR_BRIGHT_GREEN}➤${PR_RESET}) '
+PROMPT='${PROMPT_LINE}%B%F{green}:%f%b${PR_PWDCOLOR}%~${PR_RESET}${vcs_info_msg_0_}%(!.%B%F{red}%#%f%b.%B%F{green}➤%f%b) '
