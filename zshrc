@@ -356,7 +356,7 @@ precmd(){
 
     # exit code, print it if its not 0
     if [[ $exit_status -ne 0 ]]; then
-        EXIT_STATUS=" ${PR_BRIGHT_BLUE}◆${PR_RESET} ${PR_BRIGHT_YELLOW}Exit Code: ${exit_status}${PR_RESET}"
+        EXIT_STATUS=" ${PR_BRIGHT_BLUE}◆${PR_RESET} %B%F{$HASH_MOD2}Exit Code:%b%f %B%F{yellow}${exit_status}%b%f"
     else
         EXIT_STATUS=""
     fi  
