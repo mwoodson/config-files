@@ -117,39 +117,6 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
 CDPATH=.:~:~/git
 
-# Custom commands
-glob_scp() {
-    emulate -L zsh
-    local -a args
-    local a
-    for a
-    do
-    if [[ $a = *:* ]]
-    then
-            args+=($a)  # args+=($a) if you have zsh 4.2+
-    else
-            args+=($~a) # args+=($~a)
-    fi
-    done
-    scp $args
-}
-
-glob_rsync() {
-    emulate -L zsh
-    local -a args
-    local a
-    for a
-    do
-    if [[ $a = *:* ]]
-    then
-            args+=($a) # args+=($a) if you have zsh 4.2+
-    else
-            args+=($~a) # args+=($~a)
-    fi
-    done
-    rsync --progress $args
-}
-
 #setup ~/.dir_colors if one doesn\'t exist
 if [ ! -s ~/.dir_colors ]; then
     dircolors -p > ~/.dir_colors
@@ -164,8 +131,6 @@ alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias scp='noglob glob_scp'
-alias rsync='noglob glob_rsync'
 alias  vi=$(which vim)
 alias -- -='cd -'
 alias  ...='../..'
@@ -205,6 +170,7 @@ setopt SHARE_HISTORY
 ## never ever beep ever
 setopt NO_BEEP
 
+setopt nonomatch            # do not print error on non matched patterns
 ## automatically decide when to page a list of completions
 #LISTMAX=0
 
