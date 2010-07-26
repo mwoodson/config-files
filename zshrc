@@ -315,9 +315,6 @@ else
     PROMPT_LINE="%F{green}%n%f@%B%F{$HASH_MOD}%m%b%f"
 fi
 
-HASH_NUM2=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 4-7)
-HASH_MOD2=$(($HASH_NUM2 % 6 + 2)) 
-
 precmd(){
 
     local exit_status=$?
@@ -356,7 +353,7 @@ precmd(){
 
     # exit code, print it if its not 0
     if [[ $exit_status -ne 0 ]]; then
-        EXIT_STATUS=" %B%F{blue}◆%f%b %B%F{$HASH_MOD2}Exit Code:%b%f %B%F{yellow}${exit_status}%b%f"
+        EXIT_STATUS=" %B%F{blue}◆%f%b %B%F{$HASH_MOD}Exit Code:%b%f %B%F{yellow}${exit_status}%b%f"
     else
         EXIT_STATUS=""
     fi  
@@ -366,7 +363,7 @@ precmd(){
 #${PR_BRIGHT_YELLOW}%D{%R.%S %a %b %d %Y}${PR_RESET}\
 LINE1_PROMPT="\
 %B%F{black}▶%f%b%F{red}▶%B%F{red}▶%f%b \
-%B%F{$HASH_MOD2}%D{%R.%S %a %b %d %Y}%b%f\
+%B%F{$HASH_MOD}%D{%R.%S %a %b %d %Y}%b%f\
 ${EXIT_STATUS}\
 %(1j. %B%F{green}◆%f%b %B%F{yellow}Jobs: %j%f%b.)\
 ${PR_BATTERY}\
