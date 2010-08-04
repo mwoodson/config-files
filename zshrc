@@ -116,6 +116,7 @@ zstyle ':completion:*:kill:*'   force-list always
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
 CDPATH=.:~:~/git
+PATH=$PATH:~/bin
 
 #setup ~/.dir_colors if one doesn\'t exist
 if [ ! -s ~/.dir_colors ]; then
