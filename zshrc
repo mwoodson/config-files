@@ -118,6 +118,15 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 CDPATH=.:~:~/git
 PATH=$PATH:~/bin
 
+#I want my umask 0002 if I'm not root
+if [[ $(whoami) = root ]]; then
+    umask 0022
+else
+    umask 0002
+fi
+
+
+
 #setup ~/.dir_colors if one doesn\'t exist
 if [ ! -s ~/.dir_colors ]; then
     dircolors -p > ~/.dir_colors
