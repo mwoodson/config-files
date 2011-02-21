@@ -61,6 +61,9 @@ zstyle :compinstall filename '~/.zshrc'
 
 autoload -Uz compinit
 compinit
+
+autoload -U zcalc
+alias bc=zcalc
 # End of lines added by compinstall
 ## completion system
 _force_rehash() {
