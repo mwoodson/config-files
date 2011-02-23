@@ -21,7 +21,7 @@ export EDITOR=$(which vim)
 
 #new $fpath dir
 new_fpath="~/.zshfunctions"
-if [[ -d $new_fpath ]]; then
+if [ -d $new_fpath ]; then
     fpath=($new_fpath $fpath)
 fi
 ##############################################################
