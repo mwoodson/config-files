@@ -20,7 +20,7 @@ WORDCHARS="${WORDCHARS:s#.#}"
 export EDITOR=$(which vim)
 
 #new $fpath dir
-new_fpath="~/.zshfunctions"
+new_fpath=~/.zshfunctions
 if [ -d $new_fpath ]; then
     fpath=($new_fpath $fpath)
 fi
