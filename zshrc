@@ -18,6 +18,12 @@ SAVEHIST=1000
 WORDCHARS="${WORDCHARS:s#/#}"
 WORDCHARS="${WORDCHARS:s#.#}"
 export EDITOR=$(which vim)
+
+#new $fpath dir
+new_fpath="~/.zshfunctions"
+if [[ -d $new_fpath ]]; then
+    fpath=($new_fpath $fpath)
+fi
 ##############################################################
 #key binding stuff to get the right keys to work
 # key bindings
