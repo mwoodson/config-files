@@ -89,13 +89,13 @@
 # - uses background color for delete operations
   termcapinfo xterm* be
 
-  termcapinfo xterm* ti@:te@ 
+  termcapinfo xterm ti@:te@ 
 
 
 # ===============================================================
 # VARIABLES - Number values
 # ===============================================================
-  defscrollback         1000            # default: 100
+  defscrollback         2000            # default: 100
 # msgminwait            3               # default: 1
   silencewait           15              # default: 30
 #
@@ -365,7 +365,7 @@
 # bind ^\ quit        # default
   bind ^\
 # bind \\ quit        # default
-  bind \\
+#  bind \\
 # bind h  hardcopy    # default
 # bind h
 # bind ^h ???         # default
@@ -480,8 +480,8 @@
 #
 # GOOGLE - Web Search Engine
 # bind G # unbound by default
-  bind G screen -t 'Google' w3m www.google.com
-  bind ^R eval 'select 0' split 'resize 8' focus 'select 0' fit 'window prev'
+#  bind G screen -t 'Google' w3m www.google.com
+#  bind ^R eval 'select 0' split 'resize 8' focus 'select 0' fit 'window prev'
 #
 # HEISE - IT NewsTicker
 # bind H log # default!
@@ -501,7 +501,6 @@
 # bind J # unbound by default
 #
 ## bind K  kill # default!
-   bind K
 # This *removes* the binding for 'K'
 # thus requireing you to enter the
 # command via the command line, ie ":kill".
@@ -563,7 +562,7 @@
 #
 # VIM - editor
 # bind V # unbound by default
- bind V screen -t 'vim' 1 vim
+# bind V screen -t 'vim' 1 vim
 # Editing comes with email quite naturally -
 # so I have reserved window #1 for this.
 # http://www.math.fu-berlin.de/~guckes/vim/
@@ -649,10 +648,6 @@
 # Tell Vim to use a "tabstop" of '8',
 # ie expands TABs to the next column
 # whose number is a multiple of eight
-
-bind c screen 1
-bind 0 select 10
-screen 1
 
 # EOF  vim: ts=8 et nowrap
 
