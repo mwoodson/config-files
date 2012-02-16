@@ -57,10 +57,56 @@ bindkey "\e[H" beginning-of-line
 bindkey "\e[F" end-of-line
 # completion in the middle of a line
 bindkey '^i' expand-or-complete-prefix
+bindkey -e
 
+
+# set option variables
 setopt appendhistory autocd nobeep extendedglob nomatch notify
 setopt autolist auto_menu
-bindkey -e
+#allow tab completion in the middle of a word
+setopt COMPLETE_IN_WORD
+setopt CORRECT
+
+## keep background processes at full speed
+#setopt NOBGNICE
+## restart running processes on exit
+#setopt HUP
+
+## history
+#setopt APPEND_HISTORY
+## for sharing history between zsh processes
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+
+## never ever beep ever
+setopt NO_BEEP
+
+# do not print error on non matched patterns
+setopt nonomatch 
+## automatically decide when to page a list of completions
+#LISTMAX=0
+
+## disable mail checking
+#MAILCHECK=0
+setopt prompt_subst
+
+# If we have a glob this will expand it
+setopt GLOB_COMPLETE
+
+# setting cd command to pushd
+# This makes cd=pushd
+#setopt AUTO_PUSHD
+#setopt PUSHD_MINUS
+## No more annoying pushd messages...
+#setopt PUSHD_SILENT
+## blank pushd goes to home
+#setopt PUSHD_TO_HOME
+## this will ignore multiple directories for the stack.  Useful?  I dunno.
+#setopt PUSHD_IGNORE_DUPS
+#
+#
+
+
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
 zstyle :compinstall filename '~/.zshrc'
@@ -171,31 +217,6 @@ show-colors() {
     done
 }
 
-#allow tab completion in the middle of a word
-setopt COMPLETE_IN_WORD
-setopt CORRECT
-
-## keep background processes at full speed
-#setopt NOBGNICE
-## restart running processes on exit
-#setopt HUP
-
-## history
-#setopt APPEND_HISTORY
-## for sharing history between zsh processes
-setopt INC_APPEND_HISTORY
-setopt SHARE_HISTORY
-
-## never ever beep ever
-setopt NO_BEEP
-
-setopt nonomatch            # do not print error on non matched patterns
-## automatically decide when to page a list of completions
-#LISTMAX=0
-
-## disable mail checking
-#MAILCHECK=0
-
 autoload -U colors && colors
 # set some colors
 for COLOR in RED GREEN YELLOW WHITE BLACK CYAN BLUE PURPLE; do
@@ -204,7 +225,6 @@ for COLOR in RED GREEN YELLOW WHITE BLACK CYAN BLUE PURPLE; do
 done                                                 
 PR_RESET="%{${reset_color}%}";                       
 
-setopt prompt_subst
  
 autoload -Uz vcs_info
 
