@@ -206,6 +206,7 @@ alias  sl='ls -lah'
 alias  l='ls -la'
 alias -g X='| xargs'
 alias -g G='| egrep'
+alias gpa='gpa_startbranch=$(git describe --contains --all HEAD) ; git fetch --all ; for x in $(git branch -vv | grep origin | tr -d "*" | awk '\''{print $1}'\''); do git checkout $x && git pull --ff-only ; done ; git checkout $gpa_startbranch'
 
 show-colors() {
     for line in {0..17}; do
