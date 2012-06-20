@@ -196,6 +196,7 @@ alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
+alias pssh="pssh -t0"
 alias  vi=$(which vim)
 alias -- -='cd -'
 alias  ...='../..'
@@ -206,7 +207,6 @@ alias  sl='ls -lah'
 alias  l='ls -la'
 alias -g X='| xargs'
 alias -g G='| egrep'
-alias pssh "pssh -t0"
 alias gpa='gpa_startbranch=$(git describe --contains --all HEAD) ; git fetch --all ; for x in $(git branch -vv | grep origin | tr -d "*" | awk '\''{print $1}'\''); do git checkout $x && git pull --ff-only ; done ; git checkout $gpa_startbranch'
 
 show-colors() {
