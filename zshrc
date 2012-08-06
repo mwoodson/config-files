@@ -17,7 +17,12 @@ HISTSIZE=1000
 SAVEHIST=1000
 WORDCHARS="${WORDCHARS:s#/#}"
 WORDCHARS="${WORDCHARS:s#.#}"
+
+# I love vim
 export EDITOR=$(which vim)
+
+# I like auto merging
+GIT_MERGE_AUTOEDIT=no
 
 #new $fpath dir
 new_fpath=~/.zshfunctions
