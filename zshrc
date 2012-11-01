@@ -22,7 +22,7 @@ WORDCHARS="${WORDCHARS:s#.#}"
 export EDITOR=$(which vim)
 
 # I like auto merging
-GIT_MERGE_AUTOEDIT=no
+export GIT_MERGE_AUTOEDIT=no
 
 #new $fpath dir
 new_fpath=~/.zshfunctions
