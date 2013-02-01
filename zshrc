@@ -273,7 +273,7 @@ case $TERM in
             fi
         }
     ;;
-    screen)
+    screen*)
         preexec () { 
             if [[ $(basename ${1[(w)1]}) == "ssh" ]]; then
                 SHN=${1[(w)-1]}
