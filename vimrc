@@ -1,3 +1,4 @@
+execute pathogen#infect()
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
@@ -18,13 +19,16 @@ set hlsearch
 set expandtab
 set ruler
 set pastetoggle=<F9>
-nnoremap <CR> :noh<CR> 
+nnoremap <CR> :noh<CR>
 "Disable beep
 set vb
 "set paste
+set history=500
+set gdefault                    " the /g flag on :s substitutions by default
+set so=10
 
-set so=30
-" set cursorline
+filetype plugin indent on
+
 " arrow keys move via screen lines instead of logical lines
 imap <silent> <Down> <C-o>gj
 imap <silent> <Up> <C-o>gk
@@ -39,19 +43,30 @@ imap <silent> <C-k> <C-O>:m-2<CR><C-O>
 vmap <silent> <C-j> :m'>+<CR>gv=gv
 vmap <silent> <C-k> :m'<-2<CR>gv=gv
 
+" Stupid shift key fixes
+cmap W w
+cmap WQ wq
+cmap wQ wq
+cmap Q q
+cmap Tabe tabe
+
+" visual shifting (does not exit Visual mode)
+vnoremap < <gv
+vnoremap > >gv
+
 
 "jump to last position
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g'\"" | endif
-"augroup xiphias
-"	autocmd!
-"	au BufRead *.xml so /home/mwoodson/.vim/maps_r3.vim
-"	au BufRead *.xml so /home/mwoodson/.vim/import.vim
-"	au BufRead *.xml so /home/mwoodson/.vim/make.vim
-"	map <F12> vat<Esc>`<df>`>F<df>
-"augroup END
 
 set laststatus=2
-set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%y]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]\ [POS=%04l,%04v][%p%%]\ [LEN=%L]
+" Make statusline more easily readable
+set statusline=%F%m%r%h%w\ " Filename
+set statusline+=%{exists('g:loaded_fugitive')?fugitive#statusline():''} " Git Hotness
+" set statusline+=[FORMAT=%{&ff}] " Format
+set statusline+=[TYPE=%y] " File Type
+" set statusline+=[ASCII=\%03.3b]\ [HEX=\%02.2B]\ " ascii and hex values
+set statusline+=[POS=%04l,%04v][%p%%]\ " file position
+set statusline+=[LEN=%L] " Length in file
 
 ab shapy #!/usr/bin/env python<CR>
 ab sharb #!/usr/bin/env ruby<CR>
@@ -75,3 +90,5 @@ function! s:ToggleWhitespaceMatch(mode)
     let w:whitespace_match_number =  matchadd('ExtraWhitespace', pattern)
   endif
 endfunction
+
+let g:syntastic_check_on_open=1
