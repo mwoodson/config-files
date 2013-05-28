@@ -24,6 +24,18 @@ export EDITOR=$(which vim)
 # I like auto merging
 export GIT_MERGE_AUTOEDIT=no
 
+# SSH keys to add
+SSH_KEYS=(/home/mwoodson/.ssh/id_dsa /home/mwoodson/.ssh/id_rsa /home/mwoodson/ec2/mmcgrath_admin.pem /home/mwoodson/.ssh/libra.pem)
+for key in $SSH_KEYS
+do
+    if [ -f $key ]; then
+        ssh-add -l | grep $(basename $key) &> /dev/null
+        if [ $? -ne 0 ]; then
+            ssh-add $key
+        fi
+    fi
+done
+
 #new $fpath dir
 new_fpath=~/.zshfunctions
 if [ -d $new_fpath ]; then
@@ -175,7 +187,7 @@ zstyle ':completion:*:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*'   force-list always
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
-CDPATH=.:~:~/git
+CDPATH=.:~:~/git:~/git/li-ops:~git/puppet/modules
 PATH=$PATH:~/bin
 
 #I want my umask 0002 if I'm not root
@@ -213,6 +225,7 @@ alias  l='ls -la'
 alias -g X='| xargs'
 alias -g G='| egrep'
 alias gpa='gpa_startbranch=$(git describe --contains --all HEAD) ; git fetch --all ; for x in $(git branch -vv | grep "\origin" | tr -d "*" | awk '\''{print $1}'\''); do git checkout $x && git pull --ff-only ; done ; git checkout $gpa_startbranch'
+alias sos='source ~/openshift/prod.env'
 
 show-colors() {
     for line in {0..17}; do
@@ -274,7 +287,7 @@ case $TERM in
         }
     ;;
     screen*)
-        preexec () { 
+        preexec () {
             if [[ $(basename ${1[(w)1]}) == "ssh" ]]; then
                 SHN=${1[(w)-1]}
                 SHN=${SHN#*@}
@@ -318,8 +331,8 @@ if [[ -n $SSH_CONNECTION ]]; then
 
 fi
 
-HASH_NUM=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 1-8)
-HASH_MOD=$(($HASH_NUM % 16)) 
+HASH_NUM=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 1-6)
+HASH_MOD=$(($HASH_NUM % 6 + 2)) 
 if [[ $(whoami) = root ]]; then
     PROMPT_LINE="%B%F{red}%n@%M%f%b"
 else
@@ -367,18 +380,18 @@ precmd(){
         EXIT_STATUS=" %B%F{blue}◆%f%b %B%F{$HASH_MOD}Exit Code:%b%f %B%F{yellow}${exit_status}%b%f"
     else
         EXIT_STATUS=""
-    fi  
+    fi
 
 
 #PROMPT LINE
 #${PR_BRIGHT_YELLOW}%D{%R.%S %a %b %d %Y}${PR_RESET}\
 LINE1_PROMPT="\
-%B%F{black}▶%f%b%F{red}▶%B%F{red}▶%f%b \
+%B%F{red}◀%f%b \
 %B%F{$HASH_MOD}%D{%R.%S %a %b %d %Y}%b%f\
 ${EXIT_STATUS}\
 %(1j. %B%F{green}◆%f%b %B%F{yellow}Jobs: %j%f%b.)\
 ${PR_BATTERY}\
- %B%F{red}◀%f%b%F{red}◀%B%F{black}◀%f%b"
+ %B%F{red}▶%f%b"
 ###################
 
 local TERMWIDTH
