@@ -10,7 +10,7 @@
 #  yellow, blue, magenta, cyan and white, which can be set
 #  by name.  In addition. default may be used to set the
 #  terminal's default foreground colour.  Abbreviations
-#  are allowed; b or bl selects black.  
+#  are allowed; b or bl selects black.
 #
 HISTFILE=~/.histfile
 HISTSIZE=1000
@@ -23,6 +23,18 @@ export EDITOR=$(which vim)
 
 # I like auto merging
 export GIT_MERGE_AUTOEDIT=no
+
+# SSH keys to add
+SSH_KEYS=(/home/mwoodson/.ssh/id_rsa)
+for key in $SSH_KEYS
+do
+    if [ -f $key ]; then
+        ssh-add -l | grep $(basename $key) &> /dev/null
+        if [ $? -ne 0 ]; then
+            ssh-add $key
+        fi
+    fi
+done
 
 #new $fpath dir
 new_fpath=~/.zshfunctions
@@ -66,7 +78,7 @@ bindkey -e
 
 
 # set option variables
-setopt appendhistory autocd nobeep extendedglob nomatch notify
+setopt autocd nobeep extendedglob nomatch notify
 setopt autolist auto_menu
 #allow tab completion in the middle of a word
 setopt COMPLETE_IN_WORD
@@ -78,16 +90,15 @@ setopt CORRECT
 #setopt HUP
 
 ## history
-#setopt APPEND_HISTORY
 ## for sharing history between zsh processes
 setopt INC_APPEND_HISTORY
-setopt SHARE_HISTORY
+#setopt SHARE_HISTORY
 
 ## never ever beep ever
 setopt NO_BEEP
 
 # do not print error on non matched patterns
-setopt nonomatch 
+setopt nonomatch
 ## automatically decide when to page a list of completions
 #LISTMAX=0
 
@@ -120,7 +131,6 @@ autoload -Uz compinit
 compinit
 
 autoload -U zcalc
-alias bc=zcalc
 # End of lines added by compinstall
 ## completion system
 _force_rehash() {
@@ -131,9 +141,10 @@ _force_rehash() {
 zstyle ':completion:*' completer _oldlist _expand _force_rehash _complete _approximate
 zstyle ':completion:*:approximate:'    max-errors 'reply=( $((($#PREFIX+$#SUFFIX)/3 )) numeric )' # allow one error for every three characters typed in approximate completer
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # don't complete backup files as executables
-zstyle ':completion:*:correct:*'       insert-unambiguous true             # start menu completion only if it could find no unambiguous initial string
-zstyle ':completion:*:corrections'     format $'%{\e[0;31m%}%d (errors: %e)%{\e[0m%}' #
+zstyle ':completion:*:correct:*'       insert-unambiguous false             # start menu completion only if it could find no unambiguous initial string
 zstyle ':completion:*:correct:*'       original true                       #
+zstyle ':completion:correct:'          prompt 'correct to: %e'             #
+zstyle ':completion:*:corrections'     format $'%{\e[0;31m%}%d (errors: %e)%{\e[0m%}' #
 zstyle ':completion:*:default'         list-colors ${(s.:.)LS_COLORS}      # activate color-completion(!)
 zstyle ':completion:*:descriptions'    format $'%{\e[0;31m%}completing %B%d%b%{\e[0m%}'  # format on completion
 zstyle ':completion:*:*:cd:*:directory-stack' menu yes select              # complete 'cd -<tab>' with menu
@@ -153,7 +164,6 @@ zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters        # off
 zstyle ':completion:*'                 verbose true                        # provide verbose completion information
 zstyle ':completion:*:warnings'        format $'%{\e[0;31m%}No matches for:%{\e[0m%} %d' # set format for warnings
 zstyle ':completion:*:*:zcompile:*'    ignored-patterns '(*~|*.zwc)'       # define files to ignore for zcompile
-zstyle ':completion:correct:'          prompt 'correct to: %e'             #
 zstyle ':completion::(^approximate*):*:functions' ignored-patterns '_*'    # Ignore completion functions for commands you don't have:
 
 # complete manual by their section
@@ -175,8 +185,9 @@ zstyle ':completion:*:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*'   force-list always
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
-CDPATH=.:~:~/git
-PATH=$PATH:~/bin
+CDPATH=.:~:~/git:~/git/li-ops:~/git/puppet/modules
+PATH=$PATH:~/bin:~/.tmux/powerline/scripts
+POWERLINE_COMMAND=~/.tmux/powerline/scripts/powerline
 
 #I want my umask 0002 if I'm not root
 if [[ $(whoami) = root ]]; then
@@ -185,7 +196,12 @@ else
     umask 0002
 fi
 
-
+# ENV VARS
+SOURCE_FILES=(~/openshift/pass ~/openshift/prod.env ~/openshift/zabbix.env)
+for i in $SOURCE_FILES
+do
+    test -f $i &&  source $i
+done
 
 #setup ~/.dir_colors if one doesn\'t exist
 if [ ! -s ~/.dir_colors ]; then
@@ -194,6 +210,7 @@ fi
 eval `dircolors ~/.dir_colors`
 
 #aliases
+alias bc=zcalc
 alias ls='ls --color=auto'
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
@@ -213,6 +230,9 @@ alias  l='ls -la'
 alias -g X='| xargs'
 alias -g G='| egrep'
 alias gpa='gpa_startbranch=$(git describe --contains --all HEAD) ; git fetch --all ; for x in $(git branch -vv | grep "\origin" | tr -d "*" | awk '\''{print $1}'\''); do git checkout $x && git pull --ff-only ; done ; git checkout $gpa_startbranch'
+alias sos='source ~/.env/prod.env'
+# update history from other terminals
+alias uh='fc -R'
 
 show-colors() {
     for line in {0..17}; do
@@ -224,15 +244,19 @@ show-colors() {
     done
 }
 
+# stupid function to create dir then cd into it
+mcd() {
+    mkdir -p "$1" && cd "$1"
+}
+
 autoload -U colors && colors
 # set some colors
 for COLOR in RED GREEN YELLOW WHITE BLACK CYAN BLUE PURPLE; do
-    eval PR_$COLOR='%{$fg[${(L)COLOR}]%}'         
+    eval PR_$COLOR='%{$fg[${(L)COLOR}]%}'
     eval PR_BRIGHT_$COLOR='%{$fg_bold[${(L)COLOR}]%}'
-done                                                 
-PR_RESET="%{${reset_color}%}";                       
+done
+PR_RESET="%{${reset_color}%}";
 
- 
 autoload -Uz vcs_info
 
 zstyle ':vcs_info:*' enable git cvs svn
@@ -274,7 +298,7 @@ case $TERM in
         }
     ;;
     screen*)
-        preexec () { 
+        preexec () {
             if [[ $(basename ${1[(w)1]}) == "ssh" ]]; then
                 SHN=${1[(w)-1]}
                 SHN=${SHN#*@}
@@ -297,7 +321,7 @@ case $TERM in
             fi
         }
         #set up precmd to draw the screen title
-        function set_screen_title { 
+        function set_screen_title {
             print -Pn "\033k%m\033\\"
         }
         precmd_functions=( set_screen_title )
@@ -311,7 +335,7 @@ if [[ -n $SSH_CONNECTION ]]; then
         SSH_HOST=$(echo $HOST_OUTPUT | awk '{print $NF}' | sed 's/.$//')
     else
         SSH_HOST=$SSH_IP
-    fi    
+    fi
     SSH_PROMPT="${RED_STAR}%F{yellow}SSH from: %f%B%F{green}$SSH_HOST%f%b${RED_STAR}"
     #SSH_PROMPT="${YELLOW_DIAMOND}${PR_BRIGHT_RED}SSH${PR_RESET}${YELLOW_DIAMOND}"
     #SSH_VAR="${YELLOW_DIAMOND}${PR_BRIGHT_RED}SSH${PR_RESET}${YELLOW_DIAMOND}"
@@ -319,7 +343,8 @@ if [[ -n $SSH_CONNECTION ]]; then
 fi
 
 HASH_NUM=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 1-8)
-HASH_MOD=$(($HASH_NUM % 16)) 
+HASH_MOD=$(($HASH_NUM % 32))
+HASH_MOD=14
 if [[ $(whoami) = root ]]; then
     PROMPT_LINE="%B%F{red}%n@%M%f%b"
 else
@@ -360,25 +385,25 @@ precmd(){
         PR_PWDCOLOR="%F{yellow}"
     else
         PR_PWDCOLOR="${PR_BRIGHT_RED}"
-    fi  
+    fi
 
     # exit code, print it if its not 0
     if [[ $exit_status -ne 0 ]]; then
         EXIT_STATUS=" %B%F{blue}◆%f%b %B%F{$HASH_MOD}Exit Code:%b%f %B%F{yellow}${exit_status}%b%f"
     else
         EXIT_STATUS=""
-    fi  
+    fi
 
 
 #PROMPT LINE
 #${PR_BRIGHT_YELLOW}%D{%R.%S %a %b %d %Y}${PR_RESET}\
 LINE1_PROMPT="\
-%B%F{black}▶%f%b%F{red}▶%B%F{red}▶%f%b \
+%B%F{red}◀%f%b \
 %B%F{$HASH_MOD}%D{%R.%S %a %b %d %Y}%b%f\
 ${EXIT_STATUS}\
 %(1j. %B%F{green}◆%f%b %B%F{yellow}Jobs: %j%f%b.)\
 ${PR_BATTERY}\
- %B%F{red}◀%f%b%F{red}◀%B%F{black}◀%f%b"
+ %B%F{red}▶%f%b"
 ###################
 
 local TERMWIDTH
@@ -392,4 +417,7 @@ FILL_SPACES=${(l:TERMWIDTH - (LINE1_LENGTH + SSH_P_LENGTH):: :)}
 print -- "$LINE1 $FILL_SPACES $SSH_P"
 }
 
-PROMPT='${PROMPT_LINE}%B%F{green}:%f%b${PR_PWDCOLOR}%~${PR_RESET}${vcs_info_msg_0_}%(!.%B%F{red}%#%f%b.%B%F{green}➤%f%b) '
+#PROMPT='${PROMPT_LINE}%B%F{green}:%f%b${PR_PWDCOLOR}%~${PR_RESET}${vcs_info_msg_0_}%(!.%B%F{red}%#%f%b.%B%F{green}➤%f%b) '
+source ~/.zsh/git_prompt/zshrc.sh
+ZSH_THEME_GIT_PROMPT_NOCACHE=1
+PROMPT='${PROMPT_LINE}%B%F{green}:%f%b${PR_PWDCOLOR}%~${PR_RESET}$(git_super_status)%(!.%B%F{red}%#%f%b.%B%F{green}➤%f%b) '
