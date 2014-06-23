@@ -342,9 +342,8 @@ if [[ -n $SSH_CONNECTION ]]; then
 
 fi
 
-HASH_NUM=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 1-8)
-HASH_MOD=$(($HASH_NUM % 32))
-HASH_MOD=14
+HASH_NUM=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 1-6)
+HASH_MOD=$(($HASH_NUM % 6 + 2)) 
 if [[ $(whoami) = root ]]; then
     PROMPT_LINE="%B%F{red}%n@%M%f%b"
 else
